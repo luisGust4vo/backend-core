@@ -8,10 +8,34 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive Boolean @default(true)
+  roles     UserRole[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+
+
+model UserRole {
+  id      Int    @id @default(autoincrement())
+  
+  user    User   @relation(fields: [userId], references: [id])
+  userId  Int
+  
+  role    Role   @relation(fields: [roleId], references: [id])
+  roleId  Int
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, roleId])
+}
+
+model Role {
+  id    Int          @id @default(autoincrement())
+  name  String       @unique
+
+  users UserRole[]
 }
